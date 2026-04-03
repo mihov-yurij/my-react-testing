@@ -1,0 +1,27 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`UserProfile Component Pro > matches snapshot 1`] = `
+<DocumentFragment>
+  <div
+    class="user-profile"
+  >
+    <h1>
+      Vite + React
+    </h1>
+    <p
+      data-testid="user-name"
+    >
+      Welcome, Tester!
+    </p>
+    <div
+      class="card"
+    >
+      <button
+        type="button"
+      >
+        count is 0
+      </button>
+    </div>
+  </div>
+</DocumentFragment>
+`;

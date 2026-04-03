@@ -1,39 +1,26 @@
 import { useState } from 'react';
 
-/**
- * Компонент профиля пользователя со счетчиком.
- * Демонстрирует работу с состоянием и статическим контентом.
- */
-const UserProfile = () => {
-  const [count, setCount] = useState<number>(0);
+interface UserProfileProps {
+  name?: string;
+}
 
-  const handleIncrement = () => {
-    setCount((prev) => prev + 1);
-  };
+const UserProfile = ({ name = 'Guest' }: UserProfileProps) => {
+  const [count, setCount] = useState(0);
 
   return (
     <div className="user-profile">
-      {/* Тест ищет этот текст через getByText(/Vite \+ React/i) */}
       <h1>Vite + React</h1>
+      {/* Новое поле для теста пропсов */}
+      <p data-testid="user-name">Welcome, {name}!</p>
 
       <div className="card">
-        <p>Кликните на кнопку ниже, чтобы изменить состояние:</p>
-        
-        {/* Тест ищет эту кнопку через getByRole('button') 
-            и проверяет текст 'count is X' */}
-        <button 
-          type="button" 
-          onClick={handleIncrement}
-        >
+        <button type="button" onClick={() => setCount((prev) => prev + 1)}>
           count is {count}
         </button>
       </div>
-
-      <p className="read-the-docs">
-        Проверка работы тестов Vitest + React Testing Library
-      </p>
     </div>
   );
 };
 
 export default UserProfile;
+
