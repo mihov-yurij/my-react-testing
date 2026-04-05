@@ -26,7 +26,7 @@ const UserProfile = () => {
         // Локальные данные вместо fetch
         const mockUsers: Record<number, User> = {
           1: { name: "Yurij Mihov", email: "mihov.yurij@gmail.com", phone: "+38 067 485 35 67" },
-          2: { name: "Julia Navrozova", email: "yuliana.docent@gmail.com", phone: "+38 067 904 59 69" },
+          2: { name: "Yuliya Navrozova", email: "yuliana.docent@gmail.com", phone: "+38 067 904 59 69" },
           3: { name: "Clementine Bauch", email: "nathan@yesenia.net", phone: "1-463-123-4447" },
         };
 
