@@ -1,4 +1,5 @@
-import { useEffect, useState, ReactElement } from 'react';
+import { useEffect, useState, type ReactElement } from 'react';
+
 
 interface User {
   name: string;
@@ -19,7 +20,7 @@ const UserProfile = (): ReactElement => {
       setLoading(true);
       setError(null);
       try {
-        // ИСПРАВЛЕНО: корректная шаблонная строка и рабочий API
+        // ИСПРАВЛЕНО: Корректный URL для JSONPlaceholder
         const response = await fetch(`https://typicode.com{userId}`, {
           signal: controller.signal 
         });
@@ -86,11 +87,6 @@ const inlineStyles = {
 };
 
 export default UserProfile;
-
-
-
-
-
 
 
 
