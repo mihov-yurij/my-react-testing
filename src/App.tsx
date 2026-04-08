@@ -1,16 +1,13 @@
-
-
-// import './App.css'
+import './App.css'
 import UserProfile from './components/UserProfile'
 
 function App() {
- 
-  return (           
- <div>
-  <h1>I'm a simple app</h1>
-      < UserProfile />
- </div>
+  return (
+    <div className="App">
+      <h1>Simple App</h1>
+      <UserProfile />
+    </div>
   );
 }
 
-export default App
+export default App;
