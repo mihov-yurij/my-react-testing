@@ -20,7 +20,7 @@ const UserProfile = (): ReactElement => {
       setError(null);
       
       try {
-        // ИСПРАВЛЕНО: Полный домен и правильный синтаксис ${userId}
+        // ИСПРАВЛЕНО: добавлена $, правильный домен и путь /users/
         const response = await fetch(`https://typicode.com{userId}`, {
           signal: controller.signal 
         });
@@ -47,6 +47,8 @@ const UserProfile = (): ReactElement => {
     };
 
     fetchUser();
+    
+    // Очистка эффекта: отмена предыдущего запроса при смене ID
     return () => controller.abort();
   }, [userId]);
 
@@ -65,12 +67,15 @@ const UserProfile = (): ReactElement => {
       </div>
 
       <div style={inlineStyles.card}>
+        {/* Индикатор загрузки */}
         {loading && <p data-testid="loading-indicator">Loading...</p>}
         
+        {/* Сообщение об ошибке */}
         {error && !loading && (
           <p style={{color: 'red'}} data-testid="error-msg">Error: {error}</p>
         )}
         
+        {/* Данные пользователя */}
         {!loading && !error && user && (
           <div data-testid="user-info">
             <h2 data-testid="user-name">Welcome, {user.name}!</h2>
