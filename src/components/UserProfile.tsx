@@ -19,9 +19,9 @@ const UserProfile = (): ReactElement => {
       setLoading(true);
       setError(null);
       
-      try {
-        // ВНИМАТЕЛЬНО ПРОВЕРЬ ЭТУ СТРОКУ ПОСЛЕ ВСТАВКИ:
-        const response = await fetch(`https://typecode.com/users/${userId}`, {
+      try {        
+        const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`, {
+
           signal: controller.signal 
         });
 
