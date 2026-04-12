@@ -28,8 +28,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ userId }) => {
         const data = await response.json();
         setUser(data);
         setError(null);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Unknown error');
         setUser(null);
       } finally {
         setLoading(false);
