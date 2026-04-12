@@ -13,6 +13,7 @@
     "coverage": "vitest run --coverage"
   },
   "dependencies": {
+    "normalize.css": "^8.0.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4"
   },

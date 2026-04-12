@@ -1,5 +1,7 @@
-import './App.css'
-import UserProfile from './components/UserProfile'
+
+import UserProfile from './components/UserProfile';
+import 'normalize.css';
+import './App.css'; 
 
 function App() {
   return (
