@@ -19,11 +19,10 @@ const UserProfile = (): ReactElement => {
       setLoading(true);
       setError(null);
       
-      try {
-        const response = await fetch(`https://typicode.com{userId}`, {
-  signal: controller.signal 
+      try {  
+       const response = await fetch(`https://typicode.com{userId}`, 
+        { signal: controller.signal 
 });
-
 
         if (!response.ok) {
           throw new Error('User not found');
@@ -37,17 +36,17 @@ const UserProfile = (): ReactElement => {
           phone: data.phone
         });
       } catch (err: any) {
-        if (err.name !== 'AbortError') {
+        if (err.name !== 'AbortError') {         
           setError(err.message || 'Fetch failed');
+          setUser(null);
         }
       } finally {
         setLoading(false);
       }
     };
 
-    fetchUser();
-    
-    // Очистка эффекта: отмена предыдущего запроса при смене ID
+    fetchUser();    
+   
     return () => controller.abort();
   }, [userId]);
 
@@ -98,11 +97,12 @@ const inlineStyles = {
     border: '1px solid #ddd', 
     borderRadius: '12px', 
     boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-    minHeight: '150px' // Чтобы карточка не "прыгала" при загрузке
+    minHeight: '150px'
   }
 };
 
 export default UserProfile;
+
 
 
 
