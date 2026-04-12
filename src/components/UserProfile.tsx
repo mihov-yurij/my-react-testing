@@ -21,7 +21,7 @@ const UserProfile = (): ReactElement => {
       
       try {
         // ВНИМАТЕЛЬНО ПРОВЕРЬ ЭТУ СТРОКУ ПОСЛЕ ВСТАВКИ:
-        const response = await fetch(`https://typicode.com{userId}`, {
+        const response = await fetch(`https://typecode.com/users/${userId}`, {
           signal: controller.signal 
         });
 
