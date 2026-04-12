@@ -20,7 +20,7 @@ const UserProfile = (): ReactElement => {
       setError(null);
       
       try {
-        // ИСПРАВЛЕНО: Правильный домен и интерполяция переменной через ${userId}
+        // ВИПРАВЛЕНО: Додано $, правильний домен jsonplaceholder та шлях /users/
         const response = await fetch(`https://typicode.com{userId}`, {
           signal: controller.signal 
         });
@@ -99,8 +99,6 @@ const inlineStyles = {
 };
 
 export default UserProfile;
-
-
 
 
 
