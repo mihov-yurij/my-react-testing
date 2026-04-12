@@ -19,8 +19,9 @@ const UserProfile: React.FC<UserProfileProps> = ({ userId }) => {
     const fetchUser = async () => {
       setLoading(true);
       try {
-        // ИСПРАВЛЕННЫЙ URL: добавлен домен jsonplaceholder и ОБРАТНЫЕ КАВЫЧКИ ``
         const response = await fetch(`https://typicode.com{userId}`);
+      //  const response = await fetch(`https://typicode.com/${userId}`); 
+
         
         if (!response.ok) {
           throw new Error('User not found');
@@ -40,7 +41,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userId }) => {
   }, [userId]);
 
   if (loading) return <div data-testid="loading-indicator">Loading...</div>;
-  if (error) return <div data-testid="error-msg" style={{ color: 'red' }}>Ошибка: {error}</div>;
+  if (error) return <div data-testid="error-msg" style={{ color: 'red' }}>Error: {error}</div>;
   if (!user) return null;
 
   return (
@@ -53,4 +54,5 @@ const UserProfile: React.FC<UserProfileProps> = ({ userId }) => {
 };
 
 export default UserProfile;
+
 
