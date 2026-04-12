@@ -1,15 +1,11 @@
 import React, { useState, useEffect } from 'react';
 
-// Типизация данных пользователя
 interface User {
-  id: number;
   name: string;
   email: string;
   phone: string;
-  website: string;
 }
 
-// Типизация пропсов компонента
 interface UserProfileProps {
   userId: number;
 }
@@ -22,64 +18,39 @@ const UserProfile: React.FC<UserProfileProps> = ({ userId }) => {
   useEffect(() => {
     const fetchUser = async () => {
       setLoading(true);
-      setError(null);
-      
-      // Используем AbortController для предотвращения race condition
-      const controller = new AbortController();
-      const signal = controller.signal;
-
       try {
-        // ИСПРАВЛЕНО: Полный URL, обратные кавычки и правильный путь /users/
-        const response = await fetch(`https://typicode.com{userId}`, { signal });
+        // ИСПРАВЛЕННЫЙ URL: добавлен домен jsonplaceholder и ОБРАТНЫЕ КАВЫЧКИ ``
+        const response = await fetch(`https://typicode.com{userId}`);
         
         if (!response.ok) {
-          throw new Error(`Ошибка: ${response.status}. Пользователь не найден`);
+          throw new Error('User not found');
         }
-        
-        const data: User = await response.json();
+        const data = await response.json();
         setUser(data);
+        setError(null);
       } catch (err: any) {
-        if (err.name !== 'AbortError') {
-          setError(err.message || 'Не удалось загрузить данные');
-        }
+        setError(err.message);
+        setUser(null);
       } finally {
         setLoading(false);
       }
-
-      return () => controller.abort();
     };
 
     fetchUser();
   }, [userId]);
 
-  if (loading) {
-    return <div className="loading-text" data-testid="loading-indicator">Loading...</div>;
-  }
-
-  if (error) {
-    return (
-      <div className="error-msg" data-testid="error-msg" style={{ color: 'red', marginTop: '20px' }}>
-        Ошибка: {error}
-      </div>
-    );
-  }
-
+  if (loading) return <div data-testid="loading-indicator">Loading...</div>;
+  if (error) return <div data-testid="error-msg" style={{ color: 'red' }}>Ошибка: {error}</div>;
   if (!user) return null;
 
   return (
-    <div className="user-card" data-testid="user-info">
+    <div data-testid="user-info" style={{ border: '1px solid #ddd', padding: '20px', borderRadius: '8px', marginTop: '20px', display: 'inline-block' }}>
       <h2>Welcome, {user.name}!</h2>
-      <div className="user-info">
-        <span>📧</span> <strong>Email:</strong> {user.email}
-      </div>
-      <div className="user-info">
-        <span>📞</span> <strong>Phone:</strong> {user.phone}
-      </div>
-      <div className="user-info">
-        <span>🌐</span> <strong>Website:</strong> {user.website}
-      </div>
+      <p>📧 {user.email}</p>
+      <p>📞 {user.phone}</p>
     </div>
   );
 };
 
 export default UserProfile;
+
