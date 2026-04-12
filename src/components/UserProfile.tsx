@@ -19,8 +19,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ userId }) => {
     const fetchUser = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`https://typicode.com{userId}`);
-      //  const response = await fetch(`https://typicode.com/${userId}`); 
+   const response = await fetch(`https://typicode.com{userId}`);
 
         
         if (!response.ok) {
