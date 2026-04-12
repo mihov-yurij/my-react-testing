@@ -19,9 +19,9 @@ const UserProfile = (): ReactElement => {
       setLoading(true);
       setError(null);
       
-      try {  
-       const response = await fetch(`https://typicode.com{userId}`, 
-        { signal: controller.signal 
+      try { 
+        const response = await fetch(`https://typicode.com{userId}`, {
+  signal: controller.signal 
 });
 
         if (!response.ok) {
