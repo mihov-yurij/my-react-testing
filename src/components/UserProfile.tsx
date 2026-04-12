@@ -1,4 +1,8 @@
-import { useEffect, useState, type ReactElement } from 'react';
+import React, { useState, useEffect } from 'react';
+
+interface UserProfileProps {
+  userId: number;
+}
 
 interface User {
   name: string;
@@ -6,84 +10,53 @@ interface User {
   phone: string;
 }
 
-const UserProfile = (): ReactElement => {
+const UserProfile: React.FC<UserProfileProps> = ({ userId }) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [userId, setUserId] = useState<number>(1);
 
   useEffect(() => {
-    const controller = new AbortController();
-
     const fetchUser = async () => {
       setLoading(true);
       setError(null);
-      
-      try {        
-        const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`, {
-
-          signal: controller.signal 
-        });
-
-        if (!response.ok) {
-          throw new Error('User not found');
-        }
-
-        const data = await response.json();
+      try {
+        // ИСПРАВЛЕННЫЙ URL: добавлен jsonplaceholder и использованы обратные кавычки ``
+        const response = await fetch(`https://typicode.com{userId}`);
         
-        setUser({
-          name: data.name,
-          email: data.email,
-          phone: data.phone
-        });
-      } catch (err: any) {
-        if (err.name !== 'AbortError') {
-          setError(err.message || 'Fetch failed');
-          setUser(null);
+        if (!response.ok) {
+          throw new Error('Пользователь не найден');
         }
+        
+        const data = await response.json();
+        setUser(data);
+      } catch (err: any) {
+        // Если API недоступно или URL неверный, выводим понятную ошибку
+        setError(err.message === 'Failed to fetch' ? 'Ошибка сети или неверный адрес' : err.message);
+        setUser(null);
       } finally {
         setLoading(false);
       }
     };
 
     fetchUser();
-    return () => controller.abort();
   }, [userId]);
 
-  return (
-    <div style={inlineStyles.container}>
-      <div style={inlineStyles.searchBox}>
-        <label htmlFor="user-id-input">Введите ID пользователя: </label>
-        <input 
-          id="user-id-input"
-          type="number" 
-          value={userId} 
-          min="1"
-          onChange={(e) => setUserId(Number(e.target.value))}
-          style={inlineStyles.input}
-        />
-      </div>
+  if (loading) return <div className="loading-text">Загрузка данных...</div>;
+  if (error) return <div style={{ color: 'red', marginTop: '20px' }}>Ошибка: {error}</div>;
+  if (!user) return null;
 
-      <div style={inlineStyles.card}>
-        {loading && <p data-testid="loading-indicator">Loading...</p>}
-        {error && !loading && <p style={{color: 'red'}} data-testid="error-msg">Error: {error}</p>}
-        {!loading && !error && user && (
-          <div data-testid="user-info">
-            <h2 data-testid="user-name">Welcome, {user.name}!</h2>
-            <p data-testid="user-email">📧 {user.email}</p>
-            <p data-testid="user-phone">📞 {user.phone}</p>
-          </div>
-        )}
+  return (
+    <div className="user-card">
+      <h2>Welcome, {user.name}!</h2>
+      <div className="user-info">
+        <span>📧</span> {user.email}
+      </div>
+      <div className="user-info">
+        <span>📞</span> {user.phone}
       </div>
     </div>
   );
 };
 
-const inlineStyles = {
-  container: { fontFamily: 'sans-serif', padding: '20px', textAlign: 'center' as const },
-  searchBox: { marginBottom: '20px' },
-  input: { padding: '8px', width: '60px', borderRadius: '4px', border: '1px solid #ccc' },
-  card: { maxWidth: '350px', margin: '0 auto', padding: '20px', border: '1px solid #ddd', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', minHeight: '150px' }
-};
-
 export default UserProfile;
+

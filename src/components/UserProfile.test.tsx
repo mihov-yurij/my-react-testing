@@ -1,7 +1,10 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import UserProfile from './UserProfile';
+import { vi, describe, it, expect, beforeEach, type Mock } from 'vitest';
+import '@testing-library/jest-dom/vitest';
 
-const fetchMock = vi.fn() as any;
+// 1. Правильно типизируем fetchMock
+const fetchMock = vi.fn() as Mock;
 vi.stubGlobal('fetch', fetchMock);
 
 describe('UserProfile Component', () => {
@@ -9,45 +12,41 @@ describe('UserProfile Component', () => {
     fetchMock.mockClear();
   });
 
-  it('отображает индикатор загрузки при начале запроса', async () => {
+  it('отображает индикатор загрузки при начале запроса', () => {
     fetchMock.mockReturnValue(new Promise(() => {})); 
 
-    render(<UserProfile />);
+    render(<UserProfile userId={1} />);
     
-    expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
-    expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
+    // Ищем русский текст, так как в UserProfile.tsx у нас "Загрузка данных..."
+    expect(screen.getByText(/Загрузка данных.../i)).toBeInTheDocument();
   });
 
-  it('загружает нового пользователя при изменении ID', async () => {
+  it('загружает и отображает данные пользователя', async () => {
     fetchMock.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({ name: 'User 2', email: '2@test.com', phone: '222' }),
-    } as Response);
+      json: async () => ({ 
+        name: 'Leanne Graham', 
+        email: 'Sincere@april.biz', 
+        phone: '1-770-736-8031' 
+      }),
+    });
 
-    render(<UserProfile />);
+    render(<UserProfile userId={1} />);
 
-    const input = screen.getByLabelText(/Введите ID пользователя/i);
-    fireEvent.change(input, { target: { value: '2' } });
-
-    const newUser = await screen.findByText(/Welcome, User 2!/i);
-    expect(newUser).toBeInTheDocument();
+    // Ждем появления заголовка
+    const welcomeMsg = await screen.findByText(/Welcome, Leanne Graham!/i);
+    expect(welcomeMsg).toBeInTheDocument();
+    expect(screen.getByText(/Sincere@april.biz/i)).toBeInTheDocument();
   });
+
   it('отображает ошибку, если пользователь не найден', async () => {
-  fetchMock.mockResolvedValueOnce({
-    ok: false,
-    status: 404
-  } as Response);
+    fetchMock.mockResolvedValueOnce({ ok: false });
 
-  render(<UserProfile />);
+    render(<UserProfile userId={999} />);
 
- 
-  const errorMsg = await screen.findByTestId('error-msg');
-  expect(errorMsg).toHaveTextContent(/Error: User not found/i);  
-   expect(screen.queryByTestId('user-info')).not.toBeInTheDocument();
+    // Ищем русский текст ошибки из твоего UserProfile.tsx
+    const errorMsg = await screen.findByText(/Ошибка: Пользователь не найден/i);
+    expect(errorMsg).toBeInTheDocument();
+  });
 });
-
-});
-
-
-
 
