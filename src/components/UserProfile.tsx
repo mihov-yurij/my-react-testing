@@ -20,7 +20,7 @@ const UserProfile = (): ReactElement => {
       setError(null);
       
       try {
-        // КРИТИЧЕСКИ ВАЖНО: обратные кавычки ``, знак $ и полный путь /users/
+        // ВНИМАТЕЛЬНО ПРОВЕРЬ ЭТУ СТРОКУ ПОСЛЕ ВСТАВКИ:
         const response = await fetch(`https://typicode.com{userId}`, {
           signal: controller.signal 
         });
@@ -66,11 +66,7 @@ const UserProfile = (): ReactElement => {
 
       <div style={inlineStyles.card}>
         {loading && <p data-testid="loading-indicator">Loading...</p>}
-        
-        {error && !loading && (
-          <p style={{color: 'red'}} data-testid="error-msg">Error: {error}</p>
-        )}
-        
+        {error && !loading && <p style={{color: 'red'}} data-testid="error-msg">Error: {error}</p>}
         {!loading && !error && user && (
           <div data-testid="user-info">
             <h2 data-testid="user-name">Welcome, {user.name}!</h2>
@@ -87,15 +83,7 @@ const inlineStyles = {
   container: { fontFamily: 'sans-serif', padding: '20px', textAlign: 'center' as const },
   searchBox: { marginBottom: '20px' },
   input: { padding: '8px', width: '60px', borderRadius: '4px', border: '1px solid #ccc' },
-  card: { 
-    maxWidth: '350px', 
-    margin: '0 auto', 
-    padding: '20px', 
-    border: '1px solid #ddd', 
-    borderRadius: '12px', 
-    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
-    minHeight: '150px'
-  }
+  card: { maxWidth: '350px', margin: '0 auto', padding: '20px', border: '1px solid #ddd', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)', minHeight: '150px' }
 };
 
 export default UserProfile;
