@@ -1,9 +1,9 @@
-import { useState } from 'react'; // Импортируем хук для состояния
+import { useState } from 'react'; 
 import UserProfile from './components/UserProfile';
 import './App.css';
 
 function App() {
-  // 1. Создаем состояние для ID пользователя (по умолчанию 1)
+  
   const [userId, setUserId] = useState<number>(1);
 
   return (
@@ -20,7 +20,7 @@ function App() {
         />
       </div>
 
-      {/* Передаем актуальный userId в компонент */}
+     
       <UserProfile userId={userId} />
     </div>
   );
