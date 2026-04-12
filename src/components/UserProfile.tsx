@@ -20,7 +20,7 @@ const UserProfile = (): ReactElement => {
       setError(null);
       
       try {
-        // ВОТ ЗДЕСЬ БЫЛА ОШИБКА. ИСПРАВЛЕНО: добавлен $ и /users/
+        // КРИТИЧЕСКИ ВАЖНО: обратные кавычки ``, знак $ и полный путь /users/
         const response = await fetch(`https://typicode.com{userId}`, {
           signal: controller.signal 
         });
@@ -99,4 +99,3 @@ const inlineStyles = {
 };
 
 export default UserProfile;
-
