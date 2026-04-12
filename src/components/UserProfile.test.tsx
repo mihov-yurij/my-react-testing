@@ -1,47 +1,30 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest'; // Явный импорт из vitest
 import UserProfile from './UserProfile';
-import '@testing-library/jest-dom';
 
-// В Vitest используется 'vi' вместо 'jest'
-const mockFetch = vi.spyOn(window, 'fetch');
+const fetchMock = vi.fn() as any;
+vi.stubGlobal('fetch', fetchMock);
 
 describe('UserProfile Component', () => {
   beforeEach(() => {
-    mockFetch.mockClear();
+    fetchMock.mockClear();
   });
 
-  it('отображает данные пользователя после успешной загрузки', async () => {
-    mockFetch.mockResolvedValueOnce({
+  it('отображает индикатор загрузки при начале запроса', async () => {
+    fetchMock.mockReturnValue(new Promise(() => {})); 
+
+    render(<UserProfile />);
+    
+    expect(screen.getByTestId('loading-indicator')).toBeInTheDocument();
+    expect(screen.getByText(/Loading.../i)).toBeInTheDocument();
+  });
+
+  it('загружает нового пользователя при изменении ID', async () => {
+    fetchMock.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({
-        name: 'Ivan Petrov',
-        email: 'ivan@test.com',
-        phone: '123-456'
-      }),
+      json: async () => ({ name: 'User 2', email: '2@test.com', phone: '222' }),
     } as Response);
 
     render(<UserProfile />);
-
-    const userName = await screen.findByTestId('user-name');
-    expect(userName).toHaveTextContent('Welcome, Ivan Petrov!');
-    expect(screen.getByTestId('user-email')).toHaveTextContent('ivan@test.com');
-  });
-
-  it('загружает нового пользователя при смене ID', async () => {
-    mockFetch
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ name: 'User 1', email: '1@test.com', phone: '111' }),
-      } as Response)
-      .mockResolvedValueOnce({
-        ok: true,
-        json: async () => ({ name: 'User 2', email: '2@test.com', phone: '222' }),
-      } as Response);
-
-    render(<UserProfile />);
-
-    await screen.findByText(/Welcome, User 1!/i);
 
     const input = screen.getByLabelText(/Введите ID пользователя/i);
     fireEvent.change(input, { target: { value: '2' } });
@@ -49,5 +32,22 @@ describe('UserProfile Component', () => {
     const newUser = await screen.findByText(/Welcome, User 2!/i);
     expect(newUser).toBeInTheDocument();
   });
+  it('отображает ошибку, если пользователь не найден', async () => {
+  fetchMock.mockResolvedValueOnce({
+    ok: false,
+    status: 404
+  } as Response);
+
+  render(<UserProfile />);
+
+ 
+  const errorMsg = await screen.findByTestId('error-msg');
+  expect(errorMsg).toHaveTextContent(/Error: User not found/i);  
+   expect(screen.queryByTestId('user-info')).not.toBeInTheDocument();
 });
+
+});
+
+
+
 

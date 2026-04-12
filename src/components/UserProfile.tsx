@@ -1,6 +1,5 @@
 import { useEffect, useState, type ReactElement } from 'react';
 
-
 interface User {
   name: string;
   email: string;
@@ -9,7 +8,7 @@ interface User {
 
 const UserProfile = (): ReactElement => {
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [userId, setUserId] = useState<number>(1);
 
@@ -19,11 +18,12 @@ const UserProfile = (): ReactElement => {
     const fetchUser = async () => {
       setLoading(true);
       setError(null);
+      
       try {
-        // ИСПРАВЛЕНО: Корректный URL для JSONPlaceholder
         const response = await fetch(`https://typicode.com{userId}`, {
-          signal: controller.signal 
-        });
+  signal: controller.signal 
+});
+
 
         if (!response.ok) {
           throw new Error('User not found');
@@ -38,7 +38,7 @@ const UserProfile = (): ReactElement => {
         });
       } catch (err: any) {
         if (err.name !== 'AbortError') {
-          setError(err.message || 'fetch failed');
+          setError(err.message || 'Fetch failed');
         }
       } finally {
         setLoading(false);
@@ -46,6 +46,8 @@ const UserProfile = (): ReactElement => {
     };
 
     fetchUser();
+    
+    // Очистка эффекта: отмена предыдущего запроса при смене ID
     return () => controller.abort();
   }, [userId]);
 
@@ -64,9 +66,15 @@ const UserProfile = (): ReactElement => {
       </div>
 
       <div style={inlineStyles.card}>
-        {loading && <p>Loading...</p>}
-        {error && <p style={{color: 'red'}} data-testid="error-msg">Error: {error}</p>}
+        {/* Индикатор загрузки */}
+        {loading && <p data-testid="loading-indicator">Loading...</p>}
         
+        {/* Сообщение об ошибке */}
+        {error && !loading && (
+          <p style={{color: 'red'}} data-testid="error-msg">Error: {error}</p>
+        )}
+        
+        {/* Данные пользователя */}
         {!loading && !error && user && (
           <div data-testid="user-info">
             <h2 data-testid="user-name">Welcome, {user.name}!</h2>
@@ -83,10 +91,19 @@ const inlineStyles = {
   container: { fontFamily: 'sans-serif', padding: '20px', textAlign: 'center' as const },
   searchBox: { marginBottom: '20px' },
   input: { padding: '8px', width: '60px', borderRadius: '4px', border: '1px solid #ccc' },
-  card: { maxWidth: '350px', margin: '0 auto', padding: '20px', border: '1px solid #ddd', borderRadius: '12px', boxShadow: '0 4px 6px rgba(0,0,0,0.1)' }
+  card: { 
+    maxWidth: '350px', 
+    margin: '0 auto', 
+    padding: '20px', 
+    border: '1px solid #ddd', 
+    borderRadius: '12px', 
+    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+    minHeight: '150px' // Чтобы карточка не "прыгала" при загрузке
+  }
 };
 
 export default UserProfile;
+
 
 
 
