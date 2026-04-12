@@ -19,8 +19,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ userId }) => {
     const fetchUser = async () => {
       setLoading(true);
       try {
-        // ИСПРАВЛЕНО: Полный рабочий URL, обратные кавычки и знак $
-        const response = await fetch(`https://typicode.com/users/${userId}`);
+        const response = await fetch(`https://jsonplaceholder.typicode.com/users/${userId}`);
+
         
         if (!response.ok) {
           throw new Error('User not found');
